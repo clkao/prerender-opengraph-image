@@ -26,7 +26,7 @@ module.exports = ({imgprefix, file-from-url = -> it, cachedir = '/tmp', always})
     console.log options, og
 
     clipRect <- phantom.evaluate (({key,selector}) ->
-      document.body.style.background-color = 'white'
+      document.querySelector('html').className += ' prerender'
       try document.querySelector('meta[property="og:image"]').content = "#imgprefix/#key"
       return if selector
         try document.querySelector that .getBoundingClientRect!
