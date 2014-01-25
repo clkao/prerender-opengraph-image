@@ -1,6 +1,6 @@
 require! <[fs mv tmp mkdirp path]>
 
-module.exports = ({imgprefix, file-from-url = -> it, cachedir = '/tmp'}) -> do
+module.exports = ({imgprefix, file-from-url = -> it, cachedir = '/tmp', always}) -> do
   onPhantomPageCreate: (phantom, context, next) !->
     console.log \create
     next!
@@ -10,6 +10,9 @@ module.exports = ({imgprefix, file-from-url = -> it, cachedir = '/tmp'}) -> do
       options = {[meta.get-attribute('property') - /^prerender:/, meta.content] for meta in document.querySelectorAll('meta[property^="prerender:"]')}
       og = {[meta.get-attribute('property') - /^og:/, meta.content] for meta in document.querySelectorAll('meta[property^="og:"]')}
       {options, og}
+
+    unless always or options.selector
+      return next!
 
     key = file-from-url {url, options, og}
     return next! unless key
